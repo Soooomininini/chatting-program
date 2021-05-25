@@ -1,0 +1,83 @@
+using System;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+
+namespace Client
+{
+    class Program
+    {
+        static TcpClient client;
+        static void Connect()
+        {
+            client = new TcpClient();
+            client.Connect("127.0.0.1", 9999);
+            Console.WriteLine("the client is now connected to the server");
+            Console.ReadKey();
+        }
+        static void sendMessage()
+        {
+            string stringData = Console.ReadLine();
+            byte[] byteData = new byte[stringData.Length];
+            byteData = Encoding.Default.GetBytes(stringData);
+            client.GetStream().Write(byteData, 0, byteData.Length);
+            Console.WriteLine("transmit succeed");
+            Console.ReadKey();
+        }
+        static void Main(string[] args)
+        {
+            while (true)
+            {
+                Console.WriteLine("======client side========");
+                Console.WriteLine("====1. confirm connection===");
+                Console.WriteLine("====2. write a message===");
+                string strData = Console.ReadLine();
+                int order = 0;
+
+
+                if (int.TryParse(strData, out order))
+                {
+                    switch (order)
+                    {
+                        case 1:
+                            {
+                                if (client != null)
+                                {
+                                    Console.WriteLine("it's already connected");
+                                    Console.ReadKey();
+                                }
+                                else
+                                {
+                                    Connect();
+                                    //Console.ReadKey();
+
+                                }
+                                break;
+                            }
+                        case 2:
+                            {
+                                if (client == null)
+                                {
+                                    Console.WriteLine("you need to connect first");
+                                    Console.ReadKey();
+                                }
+                                else
+                                {
+                                    sendMessage();
+                                }
+                                break;
+                            }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("you have it wrong");
+                    Console.ReadKey();
+
+                }
+                Console.Clear();
+            }
+        }
+    }
+    
+}

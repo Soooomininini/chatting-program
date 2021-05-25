@@ -1,0 +1,30 @@
+using System;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+
+
+namespace Server
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("=====Server Side=====");
+            TcpListener server = new TcpListener(IPAddress.Any, 9999);
+            server.Start();
+            TcpClient client = server.AcceptTcpClient();
+            Console.WriteLine("server is ready now \n\n");
+            while (true)
+            {
+                byte[] byteData = new byte[1024];
+                client.GetStream().Read(byteData, 0, byteData.Length);
+                string strData = Encoding.Default.GetString(byteData);
+
+                int endpoint = strData.IndexOf('\0');
+                string parsedMessage = strData.Substring(0, endpoint + 1);
+                Console.WriteLine(parsedMessage);
+            }
+        }
+    }
+}
